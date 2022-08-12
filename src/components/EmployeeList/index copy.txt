@@ -1,0 +1,220 @@
+import { makeStyles } from "@material-ui/core";
+import { Table } from "@mui/material";
+import React, { useRef, useState } from "react";
+import { Link } from "react-router-dom";
+import { Employee } from "../../model/model";
+
+interface EmployeeListProps {
+  employees: Employee[];
+  setEmployees: React.Dispatch<React.SetStateAction<Employee[]>>;
+}
+
+const useStyles = makeStyles({
+  employeeAddAndSearch: {
+    display: "grid",
+    gridTemplateColumns: "900px 200px",
+    gap: "50px",
+    padding: "10px",
+  },
+  searchInput: {
+    color: "black",
+    backgroundColor: "#27AE60",
+  },
+  table: {
+    // border: "1px solid black",
+    // borderCollapse: "collapse",
+    // margin: "50px auto",
+    boxSizing: "border-box",
+    margin: "24px",
+    padding: "24px",
+    width: "100%",
+    textAlign: "left",
+    border: "1px solid #f0f0f0",
+  },
+  table__column: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+
+    color: "#BDA55D",
+    fontWeight: "bold",
+    paddingBottom: "20px",
+    borderBottom: "1px solid #C9BB8E",
+  },
+  table__row: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    color: "black",
+    paddingTop: "10px",
+    paddingBottom: "5px",
+  },
+  table__td__th: {
+    // textAlign: "center",
+    // border: "1px solid gray",
+    // padding: "8px",
+    // "&:hover": {
+    //   backgroundColor: "transparent",
+    //   border: "2px solid #27AE60",
+    // },
+  },
+  button: {
+    padding: "5px",
+    color: "black",
+    backgroundColor: "#27AE60",
+    border: "1px solid gray",
+    borderRadius: "5px",
+    width: "70px",
+  },
+  delete__button: {
+    padding: "5px",
+    color: "black",
+    border: "1px solid gray",
+    // backgroundColor: "#27AE60",
+    backgroundColor: "rgba(255, 0, 0, 0.8)",
+    borderRadius: "5px",
+    width: "70px",
+    marginLeft: "5px",
+    "&:hover": {
+      border: "2px solid rgba(255, 0, 0, 0.8)",
+    },
+  },
+});
+
+const EmployeeList = ({ employees, setEmployees }: EmployeeListProps) => {
+  const classes = useStyles();
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const [searchText, setSearchText] = useState<string>("");
+  const [searchEmployee, setSearchEmployee] = React.useState<Employee[]>([]);
+  const [searching, setSearching] = useState(false);
+
+  /** 
+       This Method for search Employee on the list
+      */
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    setSearching(true);
+    const findEmployee = employees.filter(
+      (employee) =>
+        employee.firstName.toLowerCase().includes(searchText.toLowerCase()) ||
+        employee.lastName.toLowerCase().includes(searchText.toLowerCase())
+    );
+    setSearchEmployee(findEmployee);
+  };
+
+  /** 
+       This Method for Delete Employee on the list
+      */
+  const handleDelete = (employeeID: string) => {
+    setEmployees((prev) =>
+      prev.filter((employee) => employee.employeeID !== employeeID)
+    );
+  };
+
+  return (
+    <React.Fragment>
+      <div>
+        <h1>Employee</h1>
+        <div className={classes.employeeAddAndSearch}>
+          <form
+            className="searchInput"
+            onSubmit={(e) => {
+              handleSearch(e);
+              inputRef.current?.blur();
+            }}
+          >
+            <input
+              type="input"
+              placeholder="Enter Name for Search"
+              className="input__box"
+              ref={inputRef}
+              onChange={(e) => setSearchText(e.target.value)}
+            />
+          </form>
+          <Link to={`/Add`}>
+            <button className={classes.button}>Add Employee</button>
+          </Link>
+        </div>
+        <table className={classes.table}>
+          <tbody>
+            {/* <Table className={classes.table}> */}
+            <tr className={classes.table__column}>
+              <div className={classes.table__td__th}>
+                <input type="checkbox" />
+              </div>
+              <div>Sl No</div>
+              <div className={classes.table__td__th}>Employee ID</div>
+              <div className={classes.table__td__th}>First Name</div>
+              <div className={classes.table__td__th}>Last Name</div>
+              <div className={classes.table__td__th}>Company</div>
+              <div className={classes.table__td__th}>Designation</div>
+              <div className={classes.table__td__th}>Email</div>
+              <div className={classes.table__td__th}>Action</div>
+            </tr>
+            {searching ? (
+              <>
+                {searchEmployee?.map((employee, index) => (
+                  <div className={classes.table__row}>
+                    <div>{<input type="checkbox" />}</div>
+                    <div>{index + 1}</div>
+                    <div>{employee?.employeeID}</div>
+                    <div>{employee?.firstName}</div>
+                    <div>{employee?.lastName}</div>
+                    <div>{employee?.company}</div>
+                    <div>{employee?.designation}</div>
+                    <div>{employee?.email}</div>
+
+                    <button
+                      // onClick={() => "handleEdit(employee?.employeeID)"}
+                      className={classes.button}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDelete(employee?.employeeID)}
+                      className={classes.delete__button}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                ))}
+              </>
+            ) : (
+              <>
+                {employees?.map((employee, index) => (
+                  <div className={classes.table__row}>
+                    <div>{<input type="checkbox" />}</div>
+                    <div>{index + 1}</div>
+                    <div>{employee?.employeeID}</div>
+                    <div>{employee?.firstName}</div>
+                    <div>{employee?.lastName}</div>
+                    <div>{employee?.company}</div>
+                    <div>{employee?.designation}</div>
+                    <div>{employee?.email}</div>
+
+                    <button
+                      // onClick={() => handleEdit(employee?.employeeID)}
+                      className={classes.button}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDelete(employee?.employeeID)}
+                      className={classes.delete__button}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                ))}
+              </>
+            )}
+          </tbody>
+        </table>
+      </div>
+      {/* </div> */}
+    </React.Fragment>
+  );
+};
+
+export default EmployeeList;
