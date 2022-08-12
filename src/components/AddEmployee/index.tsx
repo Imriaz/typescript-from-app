@@ -134,7 +134,9 @@ const AddEmployee: React.FC<DemoFormProps> = (props) => {
   return (
     <React.Fragment>
       <h1>Add Employee</h1>
-      <form onSubmit={(e) => props.handleSubmit(e)}>
+      <form onSubmit= {(e) => {
+        if (isValid()) return;
+        props.handleSubmit(e)}}>
         <Link to={`/`}>
           <button className={classes.form__back__button}>Back</button>
         </Link>
