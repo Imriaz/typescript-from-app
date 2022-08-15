@@ -64,6 +64,36 @@ const EmployeeList = ({ employees, setEmployees }: EmployeeListProps) => {
   const [searchText, setSearchText] = React.useState<string>("");
   const [searchEmployee, setSearchEmployee] = React.useState<Employee[]>([]);
   const [searching, setSearching] = React.useState<boolean>(false);
+  const [edit, setEdit] = React.useState<boolean>(false);
+  const [editFirstName, setEditFirstName] = React.useState<string>("");
+  const [editLastName, setEditLastName] = React.useState<string>("");
+
+  /** 
+       This Method for update the employee name field
+      */
+  const handleEdit = (e: React.FormEvent, employeeID: string) => {
+    e.preventDefault();
+    setEmployees((prev) =>
+      prev.map((employee) =>
+        employee.employeeID === employeeID
+          ? {
+              ...employee,
+              firstName: editFirstName,
+              lastName: editLastName,
+            }
+          : employee
+      )
+    );
+    setEdit(false);
+  };
+
+  /** 
+       This Method for change the edit button state from edit to Update
+      */
+  const editButtonHandler = (e: React.FormEvent) => {
+    e.preventDefault();
+    setEdit(true);
+  };
 
   /** 
        This Method for search Employee on the list
@@ -142,10 +172,24 @@ const EmployeeList = ({ employees, setEmployees }: EmployeeListProps) => {
                         {employee?.employeeID}
                       </td>
                       <td className={classes.table__td__th}>
-                        {employee?.firstName}
+                        {edit ? (
+                          <input
+                            value={editFirstName}
+                            onChange={(e) => setEditFirstName(e.target.value)}
+                          />
+                        ) : (
+                          <span>{employee?.firstName}</span>
+                        )}
                       </td>
                       <td className={classes.table__td__th}>
-                        {employee?.lastName}
+                        {edit ? (
+                          <input
+                            value={editLastName}
+                            onChange={(e) => setEditLastName(e.target.value)}
+                          />
+                        ) : (
+                          <span>{employee?.lastName}</span>
+                        )}
                       </td>
                       <td className={classes.table__td__th}>
                         {employee?.company}
@@ -157,12 +201,21 @@ const EmployeeList = ({ employees, setEmployees }: EmployeeListProps) => {
                         {employee?.email}
                       </td>
                       <td className={classes.table__td__th}>
-                        <button
-                          // onClick={() => "handleEdit(employee?.employeeID)"}
-                          className={classes.button}
-                        >
-                          Edit
-                        </button>
+                        {!edit ? (
+                          <button
+                            className={classes.button}
+                            onClick={editButtonHandler}
+                          >
+                            Edit
+                          </button>
+                        ) : (
+                          <button
+                            className={classes.button}
+                            onClick={(e) => handleEdit(e, employee.employeeID)}
+                          >
+                            Update
+                          </button>
+                        )}
                         <button
                           onClick={() => handleDelete(employee?.employeeID)}
                           className={classes.delete__button}
@@ -187,10 +240,24 @@ const EmployeeList = ({ employees, setEmployees }: EmployeeListProps) => {
                         {employee?.employeeID}
                       </td>
                       <td className={classes.table__td__th}>
-                        {employee?.firstName}
+                        {edit ? (
+                          <input
+                            value={editFirstName}
+                            onChange={(e) => setEditFirstName(e.target.value)}
+                          />
+                        ) : (
+                          <span>{employee?.firstName}</span>
+                        )}
                       </td>
                       <td className={classes.table__td__th}>
-                        {employee?.lastName}
+                        {edit ? (
+                          <input
+                            value={editLastName}
+                            onChange={(e) => setEditLastName(e.target.value)}
+                          />
+                        ) : (
+                          <span>{employee?.lastName}</span>
+                        )}
                       </td>
                       <td className={classes.table__td__th}>
                         {employee?.company}
@@ -202,12 +269,21 @@ const EmployeeList = ({ employees, setEmployees }: EmployeeListProps) => {
                         {employee?.email}
                       </td>
                       <td className={classes.table__td__th}>
-                        <button
-                          // onClick={() => handleEdit(employee?.employeeID)}
-                          className={classes.button}
-                        >
-                          Edit
-                        </button>
+                        {!edit ? (
+                          <button
+                            className={classes.button}
+                            onClick={editButtonHandler}
+                          >
+                            Edit
+                          </button>
+                        ) : (
+                          <button
+                            className={classes.button}
+                            onClick={(e) => handleEdit(e, employee.employeeID)}
+                          >
+                            Update
+                          </button>
+                        )}
                         <button
                           onClick={() => handleDelete(employee?.employeeID)}
                           className={classes.delete__button}
